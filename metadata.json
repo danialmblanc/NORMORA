@@ -1,0 +1,7 @@
+{
+  "name": "Normora",
+  "description": "AI-native assurance platform that turns regulations, systems, and evidence into continuously operating controls.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
