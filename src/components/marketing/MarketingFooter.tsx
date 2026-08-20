@@ -1,6 +1,6 @@
 import React from "react";
 import { resolveDemoUrl, CONFIG } from "../../lib/config";
-import { ArrowUpRight, ShieldCheck } from "lucide-react";
+import { ArrowUpRight, ShieldCheck, Linkedin, ExternalLink, Globe } from "lucide-react";
 
 interface MarketingFooterProps {
   onNavigate: (path: string) => void;
@@ -47,6 +47,38 @@ export const MarketingFooter: React.FC<MarketingFooterProps> = ({ onNavigate }) 
                 <span>Book a Demo</span>
                 <ArrowUpRight className="w-3 h-3" />
               </a>
+            </div>
+
+            {/* Creator / Portfolio & LinkedIn Quick Links */}
+            <div className="pt-4 mt-4 border-t border-slate-800/80 space-y-2">
+              <p className="text-[10px] uppercase font-mono font-bold tracking-widest text-slate-500">
+                Created &amp; Developed By
+              </p>
+              <div className="flex flex-col gap-1.5">
+                <a
+                  id="footer-author-linkedin"
+                  href="https://www.linkedin.com/in/smifrahim/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-xs text-slate-300 hover:text-emerald-400 transition-colors group"
+                >
+                  <Linkedin className="w-3.5 h-3.5 text-[#0A66C2] group-hover:scale-110 transition-transform" />
+                  <span>LinkedIn Profile (smifrahim)</span>
+                  <ExternalLink className="w-3 h-3 opacity-60 group-hover:opacity-100" />
+                </a>
+
+                <a
+                  id="footer-author-portfolio"
+                  href="https://v0-smifrahim.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-xs text-slate-300 hover:text-emerald-400 transition-colors group"
+                >
+                  <Globe className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform" />
+                  <span>Ifrahim Portfolio link - https://v0-smifrahim.vercel.app/</span>
+                  <ExternalLink className="w-3 h-3 opacity-60 group-hover:opacity-100" />
+                </a>
+              </div>
             </div>
           </div>
 
@@ -188,7 +220,7 @@ export const MarketingFooter: React.FC<MarketingFooterProps> = ({ onNavigate }) 
           </div>
         </div>
 
-        {/* Legal Disclaimer & Copyright */}
+        {/* Legal Disclaimer, Copyright & Bottom Creator Links */}
         <div className="mt-12 pt-8 border-t border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
@@ -197,8 +229,29 @@ export const MarketingFooter: React.FC<MarketingFooterProps> = ({ onNavigate }) 
             </span>
           </div>
 
-          <div className="flex items-center gap-4 font-mono text-[10px]">
-            <span>© 2026 Normora Inc. All rights reserved.</span>
+          <div className="flex flex-wrap items-center justify-center md:justify-end gap-x-4 gap-y-2 font-mono text-[11px]">
+            <span>© 2026 Normora Inc.</span>
+            <span className="text-slate-700">•</span>
+            <a
+              id="bottom-bar-linkedin"
+              href="https://www.linkedin.com/in/smifrahim/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-slate-300 hover:text-emerald-400 inline-flex items-center gap-1 transition-colors"
+            >
+              <Linkedin className="w-3 h-3 text-[#0A66C2]" />
+              <span>LinkedIn</span>
+            </a>
+            <span className="text-slate-700">•</span>
+            <a
+              id="bottom-bar-portfolio"
+              href="https://v0-smifrahim.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-slate-300 hover:text-emerald-400 inline-flex items-center gap-1 transition-colors"
+            >
+              <span>Ifrahim Portfolio link - https://v0-smifrahim.vercel.app/</span>
+            </a>
           </div>
         </div>
       </div>

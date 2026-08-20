@@ -316,11 +316,33 @@ export default function App() {
             </div>
 
             {/* Minimalist Operational Status Footer */}
-            <footer className="h-8 bg-slate-50 border-t border-slate-100 px-8 flex items-center justify-between text-[9px] font-mono text-slate-400 uppercase tracking-widest shrink-0">
-              <span>Normora Orchestrator v1.0.4 • {currentRoute === "/demo" ? "DEMO MODE (SYNTHETIC)" : "TENANT ACTIVE"}</span>
-              <button onClick={() => navigateTo("/")} className="hover:text-slate-900 underline">
-                Visit Normora Website
-              </button>
+            <footer className="h-9 bg-slate-50 border-t border-slate-200 px-6 flex flex-wrap items-center justify-between text-[10px] font-mono text-slate-500 shrink-0 gap-2">
+              <div className="flex items-center gap-3">
+                <span className="uppercase tracking-wider">Normora Orchestrator v1.0.4 • {currentRoute === "/demo" ? "DEMO MODE (SYNTHETIC)" : "TENANT ACTIVE"}</span>
+                <span className="text-slate-300">•</span>
+                <button onClick={() => navigateTo("/")} className="hover:text-slate-900 underline font-medium">
+                  Website Home
+                </button>
+              </div>
+              <div className="flex items-center gap-3 text-[10px]">
+                <a
+                  href="https://www.linkedin.com/in/smifrahim/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-slate-600 hover:text-slate-900 underline flex items-center gap-1 font-medium"
+                >
+                  LinkedIn (smifrahim)
+                </a>
+                <span className="text-slate-300">•</span>
+                <a
+                  href="https://v0-smifrahim.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-slate-600 hover:text-slate-900 underline font-medium"
+                >
+                  Ifrahim Portfolio link - https://v0-smifrahim.vercel.app/
+                </a>
+              </div>
             </footer>
           </main>
         </div>
