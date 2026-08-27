@@ -12,6 +12,11 @@ import { AuditView } from "./components/views/AuditView";
 import { TrustCenterView } from "./components/views/TrustCenterView";
 import { PoliciesView } from "./components/views/PoliciesView";
 import { OperationsView } from "./components/views/OperationsView";
+import { TrainingView } from "./components/views/TrainingView";
+import { PartnerView } from "./components/views/PartnerView";
+import { NotificationCenterModal } from "./components/modals/NotificationCenterModal";
+import { ContextDiscoveryModal } from "./components/modals/ContextDiscoveryModal";
+import { BetaAccessModal } from "./components/marketing/interactive/BetaAccessModal";
 
 // Public Marketing Website Components
 import { MarketingHeader } from "./components/marketing/MarketingHeader";
@@ -33,6 +38,10 @@ import {
   initialAudits,
   initialPolicies,
   initialTests,
+  initialPartnerClients,
+  initialTrainingCourses,
+  initialNotifications,
+  initialAssets,
 } from "./data/mockData";
 import {
   ProductModule,
@@ -58,6 +67,10 @@ export default function App() {
   const [currentRole, setCurrentRole] = useState<string>("Compliance Admin");
   const [isAuditorMode, setIsAuditorMode] = useState<boolean>(false);
   const [isDemoMode, setIsDemoMode] = useState<boolean>(false);
+  const [activeTenantId, setActiveTenantId] = useState<string>("TENANT-NORTHSTAR");
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState<boolean>(false);
+  const [isDiscoveryOpen, setIsDiscoveryOpen] = useState<boolean>(false);
+  const [isBetaModalOpen, setIsBetaModalOpen] = useState<boolean>(false);
 
   // Core Data States
   const [context, setContext] = useState<ContextProfile>(initialContextProfile);
@@ -71,6 +84,10 @@ export default function App() {
   const [audits, setAudits] = useState(initialAudits);
   const [policies, setPolicies] = useState(initialPolicies);
   const [tests, setTests] = useState<AutomatedTest[]>(initialTests);
+  const [partnerClients, setPartnerClients] = useState(initialPartnerClients);
+  const [trainingCourses, setTrainingCourses] = useState(initialTrainingCourses);
+  const [notifications, setNotifications] = useState(initialNotifications);
+  const [assets, setAssets] = useState(initialAssets);
 
   // Reset Demo State
   const handleResetDemo = () => {
@@ -85,8 +102,29 @@ export default function App() {
     setAudits(initialAudits);
     setPolicies(initialPolicies);
     setTests(initialTests);
+    setPartnerClients(initialPartnerClients);
+    setTrainingCourses(initialTrainingCourses);
+    setNotifications(initialNotifications);
+    setAssets(initialAssets);
+    setActiveTenantId("TENANT-NORTHSTAR");
     setActiveModule("overview");
   };
+
+  const handleSelectTenant = (tenantId: string) => {
+    setActiveTenantId(tenantId);
+    const client = partnerClients.find((c) => c.id === tenantId);
+    if (client) {
+      setContext((prev) => ({
+        ...prev,
+        companyName: client.name,
+        tradingName: client.name.split(" ")[0],
+        businessModel: client.industry,
+      }));
+    }
+  };
+
+  const activeTenantName = partnerClients.find((c) => c.id === activeTenantId)?.name || "Northstar Health AI";
+  const unreadNotifCount = notifications.filter((n) => !n.read).length;
 
   // Route Dispatcher
   const navigateTo = (path: string) => {
@@ -198,6 +236,9 @@ export default function App() {
             if (role === "Auditor (Read-Only)") {
               setIsAuditorMode(true);
               setActiveModule("audit");
+            } else if (role === "Employee") {
+              setIsAuditorMode(false);
+              setActiveModule("training");
             } else {
               setIsAuditorMode(false);
             }
@@ -205,6 +246,10 @@ export default function App() {
           onOpenTrustCenter={() => setActiveModule("trust")}
           onOpenAIQuickRun={() => setActiveModule("agents")}
           isAuditorMode={isAuditorMode}
+          onOpenNotifications={() => setIsNotificationsOpen(true)}
+          unreadNotificationsCount={unreadNotifCount}
+          activeTenantName={activeTenantName}
+          onOpenDiscovery={() => setIsDiscoveryOpen(true)}
         />
 
         <div className="flex flex-1 w-full overflow-hidden">
@@ -311,41 +356,51 @@ export default function App() {
                 <OperationsView
                   tests={tests}
                   onTriggerTest={handleTriggerTest}
+                  assets={assets}
+                />
+              )}
+
+              {activeModule === "training" && (
+                <TrainingView
+                  courses={trainingCourses}
+                  policies={policies}
+                  userRole={currentRole}
+                />
+              )}
+
+              {activeModule === "partner" && (
+                <PartnerView
+                  clients={partnerClients}
+                  activeTenantId={activeTenantId}
+                  onSelectTenant={handleSelectTenant}
                 />
               )}
             </div>
 
             {/* Minimalist Operational Status Footer */}
-            <footer className="h-9 bg-slate-50 border-t border-slate-200 px-6 flex flex-wrap items-center justify-between text-[10px] font-mono text-slate-500 shrink-0 gap-2">
-              <div className="flex items-center gap-3">
-                <span className="uppercase tracking-wider">Normora Orchestrator v1.0.4 • {currentRoute === "/demo" ? "DEMO MODE (SYNTHETIC)" : "TENANT ACTIVE"}</span>
-                <span className="text-slate-300">•</span>
-                <button onClick={() => navigateTo("/")} className="hover:text-slate-900 underline font-medium">
-                  Website Home
-                </button>
-              </div>
-              <div className="flex items-center gap-3 text-[10px]">
-                <a
-                  href="https://www.linkedin.com/in/smifrahim/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-slate-600 hover:text-slate-900 underline flex items-center gap-1 font-medium"
-                >
-                  LinkedIn (smifrahim)
-                </a>
-                <span className="text-slate-300">•</span>
-                <a
-                  href="https://v0-smifrahim.vercel.app/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-slate-600 hover:text-slate-900 underline font-medium"
-                >
-                  Ifrahim Portfolio link - https://v0-smifrahim.vercel.app/
-                </a>
-              </div>
+            <footer className="h-8 bg-slate-50 border-t border-slate-100 px-8 flex items-center justify-between text-[9px] font-mono text-slate-400 uppercase tracking-widest shrink-0">
+              <span>Normora Orchestrator v1.0.4 • {currentRoute === "/demo" ? "DEMO MODE (SYNTHETIC)" : "TENANT ACTIVE"} • {activeTenantName}</span>
+              <button onClick={() => navigateTo("/")} className="hover:text-slate-900 underline cursor-pointer">
+                Visit Normora Website
+              </button>
             </footer>
           </main>
         </div>
+
+        {/* Modals */}
+        <NotificationCenterModal
+          isOpen={isNotificationsOpen}
+          onClose={() => setIsNotificationsOpen(false)}
+          notifications={notifications}
+          onNavigateToModule={(mod) => setActiveModule(mod)}
+        />
+
+        <ContextDiscoveryModal
+          isOpen={isDiscoveryOpen}
+          onClose={() => setIsDiscoveryOpen(false)}
+          currentProfile={context}
+          onSaveProfile={handleSaveContext}
+        />
       </div>
     );
   }
@@ -356,11 +411,20 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col bg-white text-slate-900 selection:bg-slate-900 selection:text-white">
       {/* Global Marketing Navigation Header */}
-      <MarketingHeader currentPath={currentRoute} onNavigate={navigateTo} />
+      <MarketingHeader
+        currentPath={currentRoute}
+        onNavigate={navigateTo}
+        onRequestBetaAccess={() => setIsBetaModalOpen(true)}
+      />
 
       <main className="flex-1">
         {/* Homepage Route */}
-        {currentRoute === "/" && <HomeMarketingView onNavigate={navigateTo} />}
+        {currentRoute === "/" && (
+          <HomeMarketingView
+            onNavigate={navigateTo}
+            onRequestBetaAccess={() => setIsBetaModalOpen(true)}
+          />
+        )}
 
         {/* Authentication Routes */}
         {currentRoute === "/auth/login" && (
@@ -449,6 +513,13 @@ export default function App() {
 
       {/* Global Marketing Footer */}
       <MarketingFooter onNavigate={navigateTo} />
+
+      {/* Interactive Beta Access Modal */}
+      <BetaAccessModal
+        isOpen={isBetaModalOpen}
+        onClose={() => setIsBetaModalOpen(false)}
+        onNavigate={navigateTo}
+      />
     </div>
   );
 }

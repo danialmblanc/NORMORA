@@ -19,11 +19,13 @@ import { CONFIG, resolveDemoUrl } from "../../lib/config";
 interface MarketingHeaderProps {
   currentPath: string;
   onNavigate: (path: string) => void;
+  onRequestBetaAccess?: () => void;
 }
 
 export const MarketingHeader: React.FC<MarketingHeaderProps> = ({
   currentPath,
   onNavigate,
+  onRequestBetaAccess,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
@@ -257,11 +259,11 @@ export const MarketingHeader: React.FC<MarketingHeaderProps> = ({
         </div>
 
         {/* Right CTA Group */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           {/* Sign In Quiet Action */}
           <button
             onClick={() => handleNavClick("/auth/login")}
-            className="text-xs font-semibold text-slate-600 hover:text-slate-900 px-2.5 py-1.5 transition-colors cursor-pointer flex items-center gap-1"
+            className="text-xs font-semibold text-slate-600 hover:text-slate-900 px-2 py-1.5 transition-colors cursor-pointer hidden lg:flex items-center gap-1"
           >
             <Lock className="w-3 h-3 text-slate-400" />
             <span>Sign in</span>
@@ -272,20 +274,19 @@ export const MarketingHeader: React.FC<MarketingHeaderProps> = ({
             onClick={() => handleNavClick(demoUrl)}
             className="hidden sm:inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 hover:bg-slate-50 transition-colors shadow-2xs cursor-pointer"
           >
-            <Layers className="w-3.5 h-3.5 text-slate-500" />
+            <Layers className="w-3.5 h-3.5 text-emerald-600" />
             <span>Explore Demo</span>
           </button>
 
-          {/* Book 30-min Demo (Primary CTA) */}
-          <a
-            href={CONFIG.BOOK_DEMO_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-md bg-slate-900 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-white hover:bg-slate-800 transition-all shadow-2xs cursor-pointer"
+          {/* Request Full Beta Access (Primary Sticky CTA) */}
+          <button
+            id="btn-header-request-beta"
+            onClick={onRequestBetaAccess || (() => handleNavClick(demoUrl))}
+            className="inline-flex items-center gap-1.5 rounded-md bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider transition-all shadow-xs cursor-pointer"
           >
-            <Calendar className="w-3.5 h-3.5" />
-            <span>Book a Demo</span>
-          </a>
+            <span className="w-1.5 h-1.5 rounded-full bg-slate-950 animate-pulse" />
+            <span>Request Beta Access</span>
+          </button>
 
           {/* Mobile Menu Toggle */}
           <button

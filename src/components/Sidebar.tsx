@@ -12,6 +12,8 @@ import {
   BookOpen,
   Activity,
   ShieldCheck,
+  GraduationCap,
+  Briefcase,
 } from "lucide-react";
 import { ProductModule } from "../types/grc";
 
@@ -109,6 +111,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
       icon: Activity,
       badge: "100% Pass",
       badgeType: "success",
+    },
+    {
+      id: "training" as ProductModule,
+      name: "Training & Portal",
+      shortLabel: "Training",
+      icon: GraduationCap,
+      badge: "Active",
+      badgeType: "success",
+    },
+    {
+      id: "partner" as ProductModule,
+      name: "MSP Partner",
+      shortLabel: "Partner",
+      icon: Briefcase,
+      badge: "3 Tenants",
+      badgeType: "indigo",
     },
   ];
 

@@ -12,21 +12,28 @@ import {
   RefreshCw,
   Plus,
   X,
+  Layers,
+  Database,
+  Server,
+  Cloud,
+  Lock,
 } from "lucide-react";
-import { AutomatedTest } from "../../types/grc";
+import { AutomatedTest, AssetItem } from "../../types/grc";
 
 interface OperationsViewProps {
   tests: AutomatedTest[];
   onTriggerTest: (testId: string) => void;
+  assets?: AssetItem[];
 }
 
 export const OperationsView: React.FC<OperationsViewProps> = ({
   tests,
   onTriggerTest,
+  assets = [],
 }) => {
   const [runningId, setRunningId] = useState<string | null>(null);
   const [selectedTest, setSelectedTest] = useState<AutomatedTest | null>(null);
-  const [activeTab, setActiveTab] = useState<"continuous_tests" | "exceptions" | "remediation">("continuous_tests");
+  const [activeTab, setActiveTab] = useState<"continuous_tests" | "assets" | "exceptions" | "remediation">("continuous_tests");
   const [showExceptionModal, setShowExceptionModal] = useState(false);
 
   const exceptions = [
@@ -112,6 +119,16 @@ export const OperationsView: React.FC<OperationsViewProps> = ({
           Automated Tests ({tests.length})
         </button>
         <button
+          onClick={() => setActiveTab("assets")}
+          className={`border-b-2 py-3 px-4 text-xs font-semibold transition-colors ${
+            activeTab === "assets"
+              ? "border-slate-900 text-slate-900"
+              : "border-transparent text-slate-500 hover:text-slate-800"
+          }`}
+        >
+          Multi-Cloud Asset Inventory ({assets.length})
+        </button>
+        <button
           onClick={() => setActiveTab("exceptions")}
           className={`border-b-2 py-3 px-4 text-xs font-semibold transition-colors ${
             activeTab === "exceptions"
@@ -190,7 +207,76 @@ export const OperationsView: React.FC<OperationsViewProps> = ({
         </div>
       )}
 
-      {/* Tab 2: Exceptions */}
+      {/* Tab 2: Assets */}
+      {activeTab === "assets" && (
+        <div className="rounded-b-xl border border-t-0 border-slate-200 bg-white overflow-hidden shadow-2xs">
+          <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+            <div>
+              <h3 className="font-bold text-xs uppercase tracking-wider text-slate-800">
+                Discovered Infrastructure &amp; Technical Assets
+              </h3>
+              <p className="text-[11px] text-slate-500">
+                Continuously synchronized via AWS, GCP, GitHub, and Workspace connector pipelines.
+              </p>
+            </div>
+            <span className="text-[11px] font-mono font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200">
+              100% KMS Encrypted &amp; Tracked
+            </span>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr className="border-b border-slate-200 bg-slate-50/50 font-mono text-[10px] text-slate-500 uppercase">
+                  <th className="py-2.5 px-4 font-bold">Asset Key &amp; Name</th>
+                  <th className="py-2.5 px-4 font-bold">Category</th>
+                  <th className="py-2.5 px-4 font-bold">Provider / Region</th>
+                  <th className="py-2.5 px-4 font-bold">Impact Tier</th>
+                  <th className="py-2.5 px-4 font-bold">Encryption Status</th>
+                  <th className="py-2.5 px-4 font-bold">Continuous Health</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 font-sans">
+                {assets.map((ast) => (
+                  <tr key={ast.id} className="hover:bg-slate-50/70 transition-colors">
+                    <td className="py-3 px-4">
+                      <div className="font-bold text-slate-900 font-mono text-[11px]">{ast.name}</div>
+                      <span className="text-[10px] font-mono text-slate-400">ID: {ast.id} • Owner: {ast.owner}</span>
+                    </td>
+                    <td className="py-3 px-4">
+                      <span className="text-[11px] bg-slate-100 px-2 py-0.5 rounded font-medium text-slate-700">
+                        {ast.category}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 font-mono text-[11px] text-slate-600">
+                      <span className="font-semibold text-slate-900">{ast.cloudProvider}</span> • {ast.region}
+                    </td>
+                    <td className="py-3 px-4">
+                      <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-800">
+                        {ast.impactLevel}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4">
+                      <span className="text-[10px] font-mono text-emerald-700 flex items-center gap-1 font-semibold">
+                        <Lock className="w-3 h-3" />
+                        {ast.encryptionStatus}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4">
+                      <span className="inline-flex items-center gap-1 rounded bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 font-mono">
+                        <CheckCircle2 className="w-3 h-3" />
+                        {ast.complianceState}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Tab 3: Exceptions */}
       {activeTab === "exceptions" && (
         <div className="rounded-b-xl border border-t-0 border-slate-200 bg-white p-6 shadow-2xs space-y-4">
           <div>

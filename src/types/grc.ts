@@ -9,7 +9,9 @@ export type ProductModule =
   | "audit"
   | "trust"
   | "operations"
-  | "policies";
+  | "policies"
+  | "training"
+  | "partner";
 
 export type FrameworkId = "soc2" | "iso27001" | "hipaa" | "gdpr" | "iso42001";
 
@@ -191,3 +193,58 @@ export interface ContextProfile {
   version: string;
   completionScore: number;
 }
+
+export interface PartnerClient {
+  id: string;
+  name: string;
+  industry: string;
+  tier: "Enterprise" | "Growth" | "Seed";
+  frameworks: string[];
+  readinessScore: number;
+  openTasksCount: number;
+  failingChecksCount: number;
+  lastAuditSync: string;
+  status: "Active Assurance" | "Audit Preparation" | "Onboarding";
+  primaryCloud: string;
+  assignedConsultant: string;
+}
+
+export interface TrainingCourse {
+  id: string;
+  title: string;
+  category: "Security" | "Privacy & Healthcare" | "AI Ethics & Safety" | "Developer Security";
+  durationMinutes: number;
+  version: string;
+  assignedCount: number;
+  completedCount: number;
+  passScorePct: number;
+  duePeriod: string;
+  status: "Active Campaign" | "Draft" | "Archived";
+  mandatoryFor: string[];
+}
+
+export interface NotificationEvent {
+  id: string;
+  category: "Controls" | "Monitoring" | "Evidence" | "Policy" | "Audit" | "Vendor" | "Security";
+  title: string;
+  message: string;
+  timestamp: string;
+  urgency: "Critical" | "High" | "Medium" | "Low";
+  deliveryStatus: "Delivered (Email & In-App)" | "Queued" | "Bounced" | "Escalated to vCISO";
+  deepLinkModule: ProductModule;
+  read: boolean;
+}
+
+export interface AssetItem {
+  id: string;
+  name: string;
+  category: "Compute & Serverless" | "Data Storage" | "Database & Warehouse" | "Identity Provider" | "Source Code Repository" | "AI Foundation Model";
+  cloudProvider: "AWS" | "GCP" | "Azure" | "GitHub" | "Google Workspace";
+  region: string;
+  impactLevel: "Critical (Tier 1)" | "High (Tier 2)" | "Medium (Tier 3)" | "Low";
+  encryptionStatus: "Encrypted (KMS Customer Key)" | "Default Provider Encrypted" | "Unencrypted";
+  owner: string;
+  lastScanned: string;
+  complianceState: "Passing Checks" | "1 Finding Open" | "Suppression Approved";
+}
+
